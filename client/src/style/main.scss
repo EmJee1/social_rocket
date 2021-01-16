@@ -1,0 +1,24 @@
+// static color variables
+$black: #465a65;
+$white: #ffffff;
+$gray: #e4e4e4;
+$orange: #ed8b28;
+
+// linear gradient variables
+$backgroundGradient: transparent
+	linear-gradient(155deg, #ed8b28 0%, #e53935a3 50%, #ffea0178 100%) 0% 0%
+	no-repeat padding-box;
+$iconGradient: transparent linear-gradient(136deg, #ed8b28 0%, #e53935 100%) 0%
+	0% no-repeat padding-box;
+
+// other variables
+$borderRadiusSmall: 2px;
+$borderRadiusMedium: 6px;
+
+// imports
+@import './global';
+@import './typography';
+@import './forms';
+
+// partial imports
+@import './partials/Nav';

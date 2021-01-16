@@ -1,0 +1,24 @@
+.form-wrapper {
+	background-color: $white;
+	border: 1px solid transparent;
+	border-radius: $borderRadiusMedium;
+	width: 100%;
+
+	form {
+		width: 90%;
+		margin: 0 auto;
+		padding: 2rem 0;
+	}
+}
+
+input.primary-input {
+	background: $gray;
+	border: 1px solid transparent;
+	border-radius: $borderRadiusSmall;
+}
+
+.btn-primary {
+	background: $iconGradient;
+    border: 1px solid transparent;
+    color: $white;
+}
