@@ -96,7 +96,9 @@ export const loginUser = async (req, res) => {
 			.json(apiBodyResponse(false, 'The entered username is not valid'))
 		return
 	} else {
-		userQuery = await User.findOne({ userName }).exec()
+		userQuery = await User.findOne({
+			$or: [{ userName }, { email: userName }],
+		}).exec()
 		if (!userQuery) {
 			res
 				.status(401)
@@ -121,7 +123,7 @@ export const loginUser = async (req, res) => {
 	}
 
 	// user is verified
-	const token = jwt.sign({ userName }, JSON_WEBTOKEN_SECRET, {
+	const token = jwt.sign({ userId: userQuery._id }, JSON_WEBTOKEN_SECRET, {
 		expiresIn: '1h',
 	})
 
@@ -163,7 +165,7 @@ export const verifyToken = async (req, res) => {
 
 	if (signNewToken) {
 		response.token = jwt.sign(
-			{ userName: decoded.userName },
+			{ userId: decoded.userId },
 			JSON_WEBTOKEN_SECRET,
 			{
 				expiresIn: '1h',
@@ -174,12 +176,7 @@ export const verifyToken = async (req, res) => {
 	res.status(200).json(response)
 }
 
-export const verifyNewMailAddress = async (req, res) => {
-	// * Signup codes
-	// [0] => A verified user already exists with that email address
-	// [1] => Created a new user with that email address (still needs to be verified)
-	// [2] => A user already exists with that email address, but not verified. A new token was sent to the entered email address
-
+export const createUserByEmail = async (req, res) => {
 	if (!req.body) {
 		res.status(400).json(apiBodyResponse(false, 'No readable body received'))
 		return
@@ -242,4 +239,72 @@ export const verifyNewMailAddress = async (req, res) => {
 	} catch (err) {
 		res.status(500).json({ success: false, message: err.message })
 	}
+}
+
+export const verifyEmail = async (req, res) => {
+	if (!req.body) {
+		res.status(400).json(apiBodyResponse(false, 'No readable body received'))
+		return
+	}
+
+	const verificationCode = req.body.verificationCode
+	const email = req.body.email
+	if (!email || !EmailValidator.validate(email)) {
+		res.status(400).json(apiBodyResponse(false, 'Invalid email address'))
+		return
+	}
+
+	let userQuery
+	try {
+		userQuery = await User.findOne({ email }).exec()
+	} catch (err) {
+		res.status(500).json(apiBodyResponse(false, err.message))
+		return
+	}
+
+	if (!userQuery) {
+		res
+			.status(500)
+			.json(apiBodyResponse(false, 'No user with that email address found'))
+		return
+	}
+
+	// check if user is already verified
+	if (userQuery.verifiedEmail && userQuery.password) {
+		res
+			.status(400)
+			.json(apiBodyResponse(false, 'User is already verified, please log in'))
+		return
+	}
+
+	// check if the supplied verification code does not match the code in the DB
+	if (verificationCode !== userQuery.verificationCode) {
+		res
+			.status(401)
+			.json(apiBodyResponse(false, 'The entered verification code is invalid'))
+		return
+	}
+
+	// user successfully verified their email address
+	// update the database
+	try {
+		await User.updateOne({ _id: userQuery._id }, { verifiedEmail: true }).exec()
+	} catch (err) {
+		res
+			.status(500)
+			.json(
+				apiBodyResponse(
+					false,
+					'Something unexpected went wrong, please try again'
+				)
+			)
+		return
+	}
+
+	// sign a new jwt
+	const token = jwt.sign({ userId: userQuery._id }, JSON_WEBTOKEN_SECRET, {
+		expiresIn: '1h',
+	})
+
+	res.status(200).json({ success: true, token })
 }
