@@ -1,15 +1,13 @@
 import {
 	nodemailerTransport,
 	signupEmailVerificationOptions,
+	registrationEmail,
 } from '../functions/nodemailer.js'
-import { apiBodyResponse } from '../functions/response.js'
+import { apiBodyResponse, isValidUsername } from '../functions/misc.js'
 import * as EmailValidator from 'email-validator'
 import User from '../models/user.js'
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
-
-dotenv.config()
 
 const JSON_WEBTOKEN_SECRET = process.env.JSON_WEBTOKEN_SECRET
 
@@ -195,7 +193,7 @@ export const verifyEmail = async (req, res) => {
 
 	if (!userQuery) {
 		res
-			.status(500)
+			.status(401)
 			.json(apiBodyResponse(false, 'No user with that email address found'))
 		return
 	}
@@ -237,5 +235,164 @@ export const verifyEmail = async (req, res) => {
 		expiresIn: '1h',
 	})
 
-	res.status(200).json({ success: true, token })
+	res
+		.status(200)
+		.json({ success: true, message: 'Email verified successfully', token })
+}
+
+export const finishUserSignup = async (req, res) => {
+	if (!req.body) {
+		res.status(400).json(apiBodyResponse(false, 'No readable body received'))
+		return
+	}
+
+	const token = req.body.token
+	if (!token) {
+		res
+			.status(422)
+			.json(apiBodyResponse(false, 'The received token is not valid'))
+		return
+	}
+
+	// check if the provided jwt is valid
+	let decoded
+	try {
+		decoded = jwt.verify(token, JSON_WEBTOKEN_SECRET)
+	} catch (err) {
+		res
+			.status(401)
+			.json(apiBodyResponse(false, 'The received token is not valid'))
+		return
+	}
+
+	// check if the token matches the email address (to prevent a hijacked token for changing others data)
+	const email = req.body.email
+	let checkTokenWithEmailQuery
+	try {
+		checkTokenWithEmailQuery = await User.findOne({
+			_id: decoded.userId,
+			email,
+		})
+	} catch (err) {
+		res
+			.status(500)
+			.json(
+				apiBodyResponse(
+					false,
+					'Something unexpected went wrong, please try again'
+				)
+			)
+		return
+	}
+	if (!checkTokenWithEmailQuery) {
+		res
+			.status(401)
+			.json(
+				apiBodyResponse(
+					false,
+					'The token does not match with the supplied email address'
+				)
+			)
+		return
+	}
+	// check if the user already has a password
+	// this means that he can login, so he should not be able to overwrite the password
+	if (checkTokenWithEmailQuery.password) {
+		res
+			.status(401)
+			.json(
+				apiBodyResponse(
+					false,
+					'This user already has a password, please log in'
+				)
+			)
+		return
+	}
+
+	const newUserData = {}
+
+	const password = req.body.password
+	if (!password || password.length <= 6) {
+		res
+			.status(400)
+			.json(
+				apiBodyResponse(
+					false,
+					'Password needs a length of at least 7 characters'
+				)
+			)
+		return
+	}
+
+	// encrypt the password
+	const hashed = bcrypt.hashSync(password, 10)
+	newUserData.password = hashed
+
+	// check if username is valid
+	const userName = req.body.userName
+	if (!userName || userName.length <= 4 || !isValidUsername(userName)) {
+		res
+			.status(400)
+			.json(
+				apiBodyResponse(
+					false,
+					'Username needs at least 5 characters and may only contain letters, numbers and underscores'
+				)
+			)
+		return
+	}
+	// check if username is already taken
+	let userQuery
+	try {
+		userQuery = await User.findOne({ userName }).exec()
+	} catch (err) {
+		res
+			.status(500)
+			.json(
+				apiBodyResponse(
+					false,
+					'Something unexpected went wrong, please try again'
+				)
+			)
+		return
+	}
+	if (userQuery) {
+		res
+			.status(409)
+			.json(
+				apiBodyResponse(
+					false,
+					'A user with that username already exists, please choose another'
+				)
+			)
+		return
+	}
+	newUserData.userName = userName
+
+	// everything validated successfully, let's store the new data in the DB
+	try {
+		await User.updateOne({ _id: decoded.userId }, newUserData)
+	} catch (err) {
+		res
+			.status(500)
+			.json(
+				apiBodyResponse(
+					false,
+					'Something unexpected went wrong, please try again'
+				)
+			)
+		return
+	}
+
+	// sent a success mail
+	nodemailerTransport.sendMail(
+		registrationEmail(email, newUserData.userName),
+		(err, info) => {
+			res
+				.status(201)
+				.json(
+					apiBodyResponse(true, 'User details have been added successfully')
+				)
+		}
+	)
 }
