@@ -1,7 +1,14 @@
+import { setJWT } from '../functions/localstorage'
 import rocket from '../images/rocket.svg'
 import { Link } from 'react-router-dom'
 
-const Nav = ({ isLoggedIn }) => {
+
+const Nav = ({ isLoggedIn, setIsLoggedIn }) => {
+	const handleLogout = () => {
+		setJWT('')
+		setIsLoggedIn(false)
+	}
+
 	return (
 		<nav className='custom-nav navbar navbar-expand-lg navbar-light bg-light'>
 			<div className='container-fluid'>
@@ -38,6 +45,13 @@ const Nav = ({ isLoggedIn }) => {
 								{!isLoggedIn && <p className='nav-link'>Log in</p>}
 							</Link>
 						</li>
+						{isLoggedIn && (
+							<li className='nav-item'>
+								<Link onClick={handleLogout}>
+									<p className='nav-link'>Log out</p>
+								</Link>
+							</li>
+						)}
 					</ul>
 				</div>
 			</div>

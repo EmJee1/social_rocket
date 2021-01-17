@@ -7,5 +7,8 @@ export const handleLoginRequest = async (userName, password) => {
 		body: JSON.stringify({ userName, password }),
 	})
 	const data = await res.json()
+	if(!data.success) {
+		throw new Error(data.message)
+	}
 	return data
 }

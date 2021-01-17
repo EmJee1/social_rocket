@@ -2,3 +2,8 @@ body {
     background: $backgroundGradient;
     min-height: 100vh;
 }
+
+hr {
+    background-color: $orange;
+    height: 2px !important;
+}
