@@ -1,6 +1,7 @@
 import { handleLoginRequest } from '../functions/auth.api'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useHistory, Link } from 'react-router-dom'
 import { setJWT } from '../functions/localstorage'
-import { useHistory } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
 const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
@@ -22,6 +23,12 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 		}
 	}, [isLoggedIn, history])
 
+	useEffect(() => {
+		if (formError) {
+			setTimeout(() => setFormError(''), 3600)
+		}
+	}, [formError])
+
 	const submitHandler = e => {
 		e.preventDefault()
 
@@ -37,27 +44,46 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 				setJWT(res.token)
 				setIsLoggedIn(true)
 			})
-			.catch(err => setFormError(err.message))
+			.catch(err => {
+				setFormError(err.message)
+			})
 	}
 
 	return (
 		<div className='container'>
 			<div className='row'>
 				<div className='col-12 col-lg-6 mx-auto'>
-					<div className='form-wrapper form-wrapper-login'>
+					<motion.div
+						initial={{ y: '-100vh' }}
+						animate={{ y: '0vh' }}
+						className='form-wrapper form-wrapper-login'
+					>
 						<h5 className='form-heading bold'>Login</h5>
 						<hr />
-						<form onSubmit={submitHandler}>
-							{formError && (
-								<div className='alert danger-alert' role='alert'>
-									{formError}
-								</div>
-							)}
-							{formSuccess && (
-								<div className='alert success-alert' role='alert'>
-									{formSuccess}
-								</div>
-							)}
+						<motion.form onSubmit={submitHandler} layout>
+							<AnimatePresence exitBeforeEnter>
+								{formError && (
+									<motion.div
+										className='alert danger-alert'
+										role='alert'
+										exit={{ x: '100vw' }}
+										transition={{ duration: 0.6 }}
+									>
+										{formError}
+										<motion.span
+											className='alert-progress'
+											initial={{ width: '0%' }}
+											animate={{ width: '100%' }}
+											transition={{ duration: 3.4 }}
+										></motion.span>
+									</motion.div>
+								)}
+								{formSuccess && (
+									<div className='alert success-alert' role='alert'>
+										{formSuccess}
+									</div>
+								)}
+							</AnimatePresence>
 							<div className='mb-3'>
 								<label htmlFor='usernameInput' className='form-label'>
 									Username
@@ -82,11 +108,16 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 									onChange={e => setPassword(e.target.value)}
 								/>
 							</div>
-							<button type='submit' className='btn btn-primary'>
-								Submit
-							</button>
-						</form>
-					</div>
+							<div className='login-buttons-wrapper'>
+								<button type='submit' className='btn btn-primary'>
+									Submit
+								</button>
+								<Link to='/signup'>
+									<span className='bold'>Sign up</span>
+								</Link>
+							</div>
+						</motion.form>
+					</motion.div>
 				</div>
 			</div>
 		</div>

@@ -2,7 +2,6 @@ import { setJWT } from '../functions/localstorage'
 import rocket from '../images/rocket.svg'
 import { Link } from 'react-router-dom'
 
-
 const Nav = ({ isLoggedIn, setIsLoggedIn }) => {
 	const handleLogout = () => {
 		setJWT('')
@@ -47,9 +46,9 @@ const Nav = ({ isLoggedIn, setIsLoggedIn }) => {
 						</li>
 						{isLoggedIn && (
 							<li className='nav-item'>
-								<Link onClick={handleLogout}>
-									<p className='nav-link'>Log out</p>
-								</Link>
+								<p onClick={handleLogout} className='nav-link'>
+									Log out
+								</p>
 							</li>
 						)}
 					</ul>

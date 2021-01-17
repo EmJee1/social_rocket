@@ -1,3 +1,7 @@
+import {
+	nodemailerTransport,
+	signupEmailVerificationOptions,
+} from '../functions/nodemailer.js'
 import { apiBodyResponse } from '../functions/response.js'
 import * as EmailValidator from 'email-validator'
 import User from '../models/user.js'
@@ -168,4 +172,74 @@ export const verifyToken = async (req, res) => {
 	}
 
 	res.status(200).json(response)
+}
+
+export const verifyNewMailAddress = async (req, res) => {
+	// * Signup codes
+	// [0] => A verified user already exists with that email address
+	// [1] => Created a new user with that email address (still needs to be verified)
+	// [2] => A user already exists with that email address, but not verified. A new token was sent to the entered email address
+
+	if (!req.body) {
+		res.status(400).json(apiBodyResponse(false, 'No readable body received'))
+		return
+	}
+
+	const email = req.body.email
+	if (!email || !EmailValidator.validate(email)) {
+		res
+			.status(422)
+			.json(apiBodyResponse(false, 'The entered email address is not valid'))
+		return
+	}
+
+	// check if a user is already in the database with that email
+	const emailQuery = await User.findOne({ email }).exec()
+
+	if (!emailQuery) {
+		// create a new user is there is no with that email
+		const verificationCode = Math.floor(100000 + Math.random() * 900000)
+
+		const userDetails = { email, verificationCode }
+		const newUser = new User(userDetails)
+
+		// save a new user to the database with the email and verification code
+		try {
+			await newUser.save()
+			res.status(201).json(apiBodyResponse(true, 'Sent a verification email'))
+		} catch (err) {
+			res.status(500).json({ success: false, message: err.message })
+		}
+		return
+	}
+
+	if (emailQuery.verifiedEmail) {
+		// a verified user already exists with that email address
+		res
+			.status(409)
+			.json(
+				apiBodyResponse(false, 'A user with that email address already exists')
+			)
+		return
+	}
+
+	// a user already exists, but is not verified yet
+	const verificationCode = Math.floor(100000 + Math.random() * 900000)
+	try {
+		await User.updateOne({ _id: emailQuery._id }, { verificationCode })
+		nodemailerTransport.sendMail(
+			signupEmailVerificationOptions(email, verificationCode),
+			(err, info) => {
+				if (err) {
+					res.status(500).json(apiBodyResponse(false, err))
+				} else {
+					res
+						.status(201)
+						.json(apiBodyResponse(true, 'Sent a verification email'))
+				}
+			}
+		)
+	} catch (err) {
+		res.status(500).json({ success: false, message: err.message })
+	}
 }
