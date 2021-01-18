@@ -20,21 +20,22 @@
 			padding: 0 0.75rem 0;
 		}
 
-		h1.navbar-brand,
-		p {
+	}
+	
+	h1.navbar-brand,
+	p {
+		color: $black;
+		font-size: 26px;
+		font-weight: 700;
+		margin: 0 0 0 1rem;
+		padding-bottom: 0;
+		padding-top: 0;
+		cursor: pointer;
+		&:focus,
+		&:hover {
 			color: $black;
-			font-size: 26px;
-			font-weight: 700;
-			margin: 0 0 0 1rem;
-			padding-bottom: 0;
-			padding-top: 0;
-			&:focus,
-			&:hover {
-				color: $black;
-			}
 		}
 	}
-
 	.navbar-nav {
 		border-top: 1px solid #c1c1c1;
 		margin-top: 0.8rem;
@@ -49,6 +50,10 @@
 			}
 		}
 	}
+}
+
+.padding-nav-item {
+	padding: .5rem 0rem;
 }
 
 @media only screen and (max-width: 335px) {

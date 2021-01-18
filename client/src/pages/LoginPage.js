@@ -1,7 +1,7 @@
 import { handleLoginRequest } from '../functions/auth.api'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useHistory, Link } from 'react-router-dom'
-import { setJWT } from '../functions/localstorage'
+import { setJWT } from '../functions/misc'
 import { useState, useEffect } from 'react'
 
 const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
@@ -68,6 +68,7 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 										role='alert'
 										exit={{ x: '100vw' }}
 										transition={{ duration: 0.6 }}
+										key='error'
 									>
 										{formError}
 										<motion.span
@@ -79,9 +80,21 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 									</motion.div>
 								)}
 								{formSuccess && (
-									<div className='alert success-alert' role='alert'>
+									<motion.div
+										className='alert success-alert'
+										role='alert'
+										exit={{ x: '100vw' }}
+										transition={{ duration: 0.6 }}
+										key='success'
+									>
 										{formSuccess}
-									</div>
+										<motion.span
+											className='success-progress'
+											initial={{ width: '0%' }}
+											animate={{ width: '100%' }}
+											transition={{ duration: .8 }}
+										></motion.span>
+									</motion.div>
 								)}
 							</AnimatePresence>
 							<div className='mb-3'>

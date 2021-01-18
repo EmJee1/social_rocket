@@ -68,12 +68,22 @@ input.primary-input {
 
 .success-alert {
 	border: 2px solid $green;
-	background: transparentize($green, 0.75);
+	background: transparent;
 	color: $black;
 }
 
 .alert-progress {
 	background: transparentize($orange, 0.75);
+	position: absolute;
+	display: block;
+	height: 100%;
+	z-index: -1;
+	left: 0;
+	top: 0;
+}
+
+.success-progress {
+	background: transparentize($green, 0.75);
 	position: absolute;
 	display: block;
 	height: 100%;

@@ -132,14 +132,14 @@ export const createUserByEmail = async (req, res) => {
 		// save a new user to the database with the email and verification code
 		try {
 			await newUser.save()
-			res.status(201).json(apiBodyResponse(true, 'Sent a verification email'))
+			res.status(201).json(apiBodyResponse(true, 'Please check your inbox for the verification code'))
 		} catch (err) {
 			res.status(500).json({ success: false, message: err.message })
 		}
 		return
 	}
 
-	if (emailQuery.verifiedEmail) {
+	if (emailQuery.password) {
 		// a verified user already exists with that email address
 		res
 			.status(409)
@@ -161,7 +161,7 @@ export const createUserByEmail = async (req, res) => {
 				} else {
 					res
 						.status(201)
-						.json(apiBodyResponse(true, 'Sent a verification email'))
+						.json(apiBodyResponse(true, 'A verification e-mail has been sent, please check your inbox'))
 				}
 			}
 		)
@@ -199,7 +199,7 @@ export const verifyEmail = async (req, res) => {
 	}
 
 	// check if user is already verified
-	if (userQuery.verifiedEmail && userQuery.password) {
+	if (userQuery.password) {
 		res
 			.status(400)
 			.json(apiBodyResponse(false, 'User is already verified, please log in'))
@@ -384,7 +384,7 @@ export const finishUserSignup = async (req, res) => {
 		return
 	}
 
-	// sent a success mail
+	// send a success mail
 	nodemailerTransport.sendMail(
 		registrationEmail(email, newUserData.userName),
 		(err, info) => {

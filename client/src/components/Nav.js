@@ -1,4 +1,4 @@
-import { setJWT } from '../functions/localstorage'
+import { setJWT } from '../functions/misc'
 import rocket from '../images/rocket.svg'
 import { Link } from 'react-router-dom'
 
@@ -30,7 +30,9 @@ const Nav = ({ isLoggedIn, setIsLoggedIn }) => {
 					<ul className='navbar-nav'>
 						<li className='nav-item'>
 							<Link to='/'>
-								<p className='nav-link active'>Feed</p>
+								<p className={`nav-link`}>
+									Feed
+								</p>
 							</Link>
 						</li>
 						<li className='nav-item'>
@@ -40,12 +42,15 @@ const Nav = ({ isLoggedIn, setIsLoggedIn }) => {
 						</li>
 						<li className='nav-item'>
 							<Link to={isLoggedIn ? '/profile' : '/login'}>
-								{isLoggedIn && <p className='nav-link'>Profile</p>}
-								{!isLoggedIn && <p className='nav-link'>Log in</p>}
+								<p
+									className={`nav-link`}
+								>
+									{isLoggedIn ? 'Profile' : 'Log in'}
+								</p>
 							</Link>
 						</li>
 						{isLoggedIn && (
-							<li className='nav-item'>
+							<li className='nav-item padding-nav-item'>
 								<p onClick={handleLogout} className='nav-link'>
 									Log out
 								</p>

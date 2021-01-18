@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
+import FinalDetails from '../components/signup/FinalDetails'
 import SignupEmail from '../components/signup/SignupEmail'
+import VerifyEmail from '../components/signup/VerifyEmail'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { setJWT } from '../functions/misc'
 
-const SignupPage = ({ isLoggedIn, setIsLoggedIn }) => {
-	const [emailVerified, setEmailVerified] = useState(false)
+const SignupPage = ({ history }) => {
 	const [formSuccess, setFormSuccess] = useState('')
 	const [signupStep, setSignupStep] = useState(0)
 	const [formError, setFormError] = useState('')
@@ -13,9 +14,76 @@ const SignupPage = ({ isLoggedIn, setIsLoggedIn }) => {
 
 	useEffect(() => {
 		if (formError) {
-			setTimeout(() => setFormError(''), 3600)
+			setTimeout(() => setFormError(''), 4400)
 		}
-	}, [formError])
+		if (formSuccess) {
+			setTimeout(() => setFormSuccess(''), 3600)
+		}
+	}, [formError, formSuccess])
+
+	const nextStep = () => setSignupStep(signupStep + 1)
+	const prevStep = () => setSignupStep(signupStep - 1)
+
+	const renderCurrentStep = () => {
+		switch (signupStep) {
+			case 0:
+				return (
+					<motion.div
+						initial={{ x: '100vw' }}
+						animate={{ x: '0vw' }}
+						exit={{ x: '-100vw' }}
+					>
+						<SignupEmail
+							setFormSuccess={setFormSuccess}
+							setFormError={setFormError}
+							setEmail={setEmail}
+							nextStep={nextStep}
+							email={email}
+							key='signupemail'
+						/>
+					</motion.div>
+				)
+			case 1:
+				return (
+					<motion.div
+						initial={{ x: '100vw' }}
+						animate={{ x: '0vw' }}
+						exit={{ x: '-100vw' }}
+					>
+						<VerifyEmail
+							setFormSuccess={setFormSuccess}
+							setFormError={setFormError}
+							nextStep={nextStep}
+							prevStep={prevStep}
+							email={email}
+							key='verifyemail'
+						/>
+					</motion.div>
+				)
+			case 2:
+				return (
+					<motion.div
+						initial={{ x: '100vw' }}
+						animate={{ x: '0vw' }}
+						exit={{ x: '-100vw' }}
+					>
+						<FinalDetails
+							setFormSuccess={setFormSuccess}
+							setFormError={setFormError}
+							nextStep={nextStep}
+							email={email}
+							key='finaldetails'
+						/>
+					</motion.div>
+				)
+			case 3:
+				setJWT('')
+				setTimeout(() => history.push('/login'), 3400)
+				return null
+			default:
+				return null
+		}
+	}
 
 	return (
 		<div className='container'>
@@ -29,39 +97,42 @@ const SignupPage = ({ isLoggedIn, setIsLoggedIn }) => {
 						<h5 className='form-heading bold'>Sign up</h5>
 						<hr />
 						<motion.form layout>
-							<AnimatePresence exitBeforeEnter>
+							<AnimatePresence>
 								{formError && (
 									<motion.div
 										className='alert danger-alert'
 										role='alert'
 										exit={{ x: '100vw' }}
 										transition={{ duration: 0.6 }}
+										key='error'
 									>
 										{formError}
 										<motion.span
 											className='alert-progress'
 											initial={{ width: '0%' }}
 											animate={{ width: '100%' }}
-											transition={{ duration: 3.4 }}
+											transition={{ duration: 4 }}
 										></motion.span>
 									</motion.div>
 								)}
 								{formSuccess && (
-									<div className='alert success-alert' role='alert'>
+									<motion.div
+										className='alert success-alert'
+										role='alert'
+										exit={{ x: '100vw' }}
+										transition={{ duration: 0.6 }}
+										key='success'
+									>
 										{formSuccess}
-									</div>
+										<motion.span
+											className='success-progress'
+											initial={{ width: '0%' }}
+											animate={{ width: '100%' }}
+											transition={{ duration: 3.4 }}
+										></motion.span>
+									</motion.div>
 								)}
-								{signupStep === 0 && (
-									<SignupEmail email={email} setEmail={setEmail} />
-								)}
-								<div className='login-buttons-wrapper'>
-									<button type='submit' className='btn btn-primary'>
-										Submit
-									</button>
-									<Link to='/login'>
-										<span className='bold'>Log in</span>
-									</Link>
-								</div>
+								{renderCurrentStep()}
 							</AnimatePresence>
 						</motion.form>
 					</motion.div>
