@@ -1,6 +1,19 @@
 import mongoose from 'mongoose'
+const Schema = mongoose.Schema
 
-const userSchema = mongoose.Schema({
+// create the posts schema
+const PostSchema = new Schema({
+	caption: String,
+	image: String,
+	likes: [],
+	createdAt: {
+		type: Date,
+		default: new Date(),
+	},
+})
+
+// create the user schema
+const UserSchema = new Schema({
 	userName: String,
 	email: String,
 	password: String,
@@ -9,12 +22,16 @@ const userSchema = mongoose.Schema({
 		default: false,
 	},
 	verificationCode: String,
+	posts: {
+		type: [PostSchema],
+		default: [],
+	},
 	createdAt: {
 		type: Date,
 		default: new Date(),
 	},
 })
 
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('User', UserSchema)
 
 export default User

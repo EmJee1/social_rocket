@@ -5,7 +5,7 @@ import {
 } from '../functions/nodemailer.js'
 import { apiBodyResponse, isValidUsername } from '../functions/misc.js'
 import * as EmailValidator from 'email-validator'
-import User from '../models/user.js'
+import User from '../models/User.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
