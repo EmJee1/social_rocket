@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
 import Nav from './components/Nav'
+import Feed from './pages/Feed'
 
 const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -22,7 +23,9 @@ const App = () => {
 		<div className='App'>
 			<Nav isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
 			<Switch>
-				<Route path='/' exact></Route>
+				<Route path='/' exact>
+					<Feed />
+				</Route>
 				<Route path='/login' exact>
 					<LoginPage setIsLoggedIn={setIsLoggedIn} isLoggedIn={isLoggedIn} />
 				</Route>

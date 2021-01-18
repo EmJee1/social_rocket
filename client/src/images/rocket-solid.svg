@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="11" height="11" viewBox="0 0 11 11">
+    <defs>
+        <linearGradient id="linear-gradient" x1="1" x2="0.164" y2="0.832" gradientUnits="objectBoundingBox">
+        <stop offset="0" stop-color="#ed8b28"/>
+        <stop offset="1" stop-color="#e53935"/>
+        </linearGradient>
+        <clipPath id="clip-path">
+        <rect id="Rectangle_5" data-name="Rectangle 5" width="11" height="11" transform="translate(50 397)" stroke="#707070" stroke-width="1" fill="url(#linear-gradient)"/>
+        </clipPath>
+    </defs>
+    <g id="Mask_Group_2" data-name="Mask Group 2" transform="translate(-50 -397)" clip-path="url(#clip-path)">
+        <path id="rocket-solid" d="M10.852.41A.371.371,0,0,0,10.59.148,7.792,7.792,0,0,0,8.817,0,5.128,5.128,0,0,0,4.277,2.75H2.038a1.13,1.13,0,0,0-.921.569L.054,5.442A.61.61,0,0,0,0,5.672a.516.516,0,0,0,.516.516h2.23l-.483.483a.7.7,0,0,0,0,.972L3.357,8.736a.7.7,0,0,0,.973,0l.483-.483v2.231A.516.516,0,0,0,5.328,11a.614.614,0,0,0,.23-.054L7.679,9.885a1.126,1.126,0,0,0,.57-.921V6.72A5.144,5.144,0,0,0,11,2.185,7.626,7.626,0,0,0,10.852.41Zm-2.6,3.2a.859.859,0,1,1,.86-.859.859.859,0,0,1-.86.859Z" transform="translate(50 397)" fill="url(#linear-gradient)"/>
+    </g>
+</svg>

@@ -61,7 +61,7 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 						<h5 className='form-heading bold'>Login</h5>
 						<hr />
 						<motion.form onSubmit={submitHandler} layout>
-							<AnimatePresence exitBeforeEnter>
+							<AnimatePresence>
 								{formError && (
 									<motion.div
 										className='alert danger-alert'
