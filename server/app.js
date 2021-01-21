@@ -2,9 +2,10 @@ import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import express from 'express'
 import dotenv from 'dotenv'
+import path from 'path'
 import cors from 'cors'
 
-import userRoutes from './routes/users.js'
+import authRoutes from './routes/auth.js'
 import postRoutes from './routes/posts.js'
 
 const app = express()
@@ -14,7 +15,11 @@ app.use(bodyParser.json({ limit: '30mb', extended: true }))
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
 app.use(cors())
 
-app.use('/v1/users', userRoutes)
+const __dirname = path.resolve(path.dirname(''))
+
+app.use('/static', express.static(__dirname + '/uploads'))
+
+app.use('/v1/auth', authRoutes)
 app.use('/v1/posts', postRoutes)
 
 const CONNECTION_URL = process.env.CONNECTION_URL

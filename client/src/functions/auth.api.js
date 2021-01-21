@@ -1,5 +1,5 @@
 export const handleLoginRequest = async (userName, password) => {
-	const res = await fetch(`${window.API_BASEURL}users/login`, {
+	const res = await fetch(`${window.API_BASEURL}auth/login`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ export const handleLoginRequest = async (userName, password) => {
 }
 
 export const createUserByEmail = async email => {
-	const res = await fetch(`${window.API_BASEURL}users/createUserByEmail`, {
+	const res = await fetch(`${window.API_BASEURL}auth/createUserByEmail`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ email }),
@@ -27,7 +27,7 @@ export const createUserByEmail = async email => {
 }
 
 export const verifyEmail = async (email, verificationCode) => {
-	const res = await fetch(`${window.API_BASEURL}users/verifyEmail`, {
+	const res = await fetch(`${window.API_BASEURL}auth/verifyEmail`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ email, verificationCode }),
@@ -40,7 +40,7 @@ export const verifyEmail = async (email, verificationCode) => {
 }
 
 export const finishUserSignup = async (email, userName, password, token) => {
-	const res = await fetch(`${window.API_BASEURL}users/finishUserSignup`, {
+	const res = await fetch(`${window.API_BASEURL}auth/finishUserSignup`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ email, userName, password, token }),
