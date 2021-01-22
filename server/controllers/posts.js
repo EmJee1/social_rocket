@@ -84,3 +84,33 @@ export const createPost = async (req, res) => {
 		token: newToken,
 	})
 }
+
+export const getPosts = async (req, res) => {
+	let posts
+	try {
+		posts = await Post.find().limit(10).exec()
+	} catch (err) {
+		res
+			.status(500)
+			.json(apiBodyResponse(false, 'Unexpected error, please try again'))
+	}
+
+	// get the author information by author id
+	for (let i = 0; i < posts.length; i++) {
+		let data
+		try {
+			data = await User.findOne({ _id: posts[i].author })
+				.select('userName')
+				.exec()
+		} catch (err) {
+			res
+				.status(500)
+				.json(apiBodyResponse(false, 'Unexpected error, please try again'))
+		}
+		posts[i].author = data.userName
+	}
+
+	res
+		.status(200)
+		.json({ success: true, message: 'Requested posts successfully', posts })
+}
