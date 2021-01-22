@@ -51,3 +51,12 @@ export const finishUserSignup = async (email, userName, password, token) => {
 	}
 	return data
 }
+
+export const getAllPosts = async () => {
+	const res = await fetch(`${window.API_BASEURL}posts/getPosts`)
+	const data = await res.json()
+	if(!data.success) {
+		throw new Error(data.message)
+	}
+	return data
+}

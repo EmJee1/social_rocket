@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import rocketSVG from '../images/rocket-solid.svg'
 import commentsSVG from '../images/comments.svg'
 import { Link } from 'react-router-dom'
@@ -29,7 +29,7 @@ const Post = ({ postImage, userImage, userName, caption, likes, comments }) => {
 			</div>
 			<div className='post-caption'>
 				<p ref={captionRef} style={captionStyle}>
-					<span className='bold'>Darlene_Fitzgerald:</span>
+					<span className='bold'>{userName}:</span>
 					{caption}
 				</p>
 				<span
