@@ -1,3 +1,5 @@
+import { getJWT } from '../functions/misc'
+
 export const handleLoginRequest = async (userName, password) => {
 	const res = await fetch(`${window.API_BASEURL}auth/login`, {
 		method: 'POST',
@@ -54,6 +56,25 @@ export const finishUserSignup = async (email, userName, password, token) => {
 
 export const getAllPosts = async () => {
 	const res = await fetch(`${window.API_BASEURL}posts/getPosts`)
+	const data = await res.json()
+	if(!data.success) {
+		throw new Error(data.message)
+	}
+	return data
+}
+
+export const checkLocalJWT = async () => {
+	const currentToken = getJWT()
+	if(!currentToken) {
+		throw new Error('User is logged out')
+	}
+	const res = await fetch(`${window.API_BASEURL}auth/verifyToken`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ token: currentToken, signNewToken: true })
+	})
 	const data = await res.json()
 	if(!data.success) {
 		throw new Error(data.message)

@@ -27,6 +27,7 @@ const FeedPage = () => {
 						{posts.length &&
 							posts.map((obj, index) => (
 								<Post
+									key={obj._id}
 									postImage={obj.image}
 									userImage={userImage}
 									userName={obj.author}
