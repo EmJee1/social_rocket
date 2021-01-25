@@ -88,11 +88,12 @@ export const createPost = async (req, res) => {
 export const getPosts = async (req, res) => {
 	let posts
 	try {
-		posts = await Post.find().limit(10).exec()
+		posts = await Post.find().limit(10).sort({ createdAt: -1 }).exec()
 	} catch (err) {
 		res
 			.status(500)
 			.json(apiBodyResponse(false, 'Unexpected error, please try again'))
+		return
 	}
 
 	// get the author information by author id
@@ -106,6 +107,7 @@ export const getPosts = async (req, res) => {
 			res
 				.status(500)
 				.json(apiBodyResponse(false, 'Unexpected error, please try again'))
+			return
 		}
 		posts[i].author = data.userName
 	}

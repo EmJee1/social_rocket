@@ -1,11 +1,10 @@
 import User from '../models/User.js'
-import mongoose, { mongo } from 'mongoose'
+import mongoose from 'mongoose'
+import { assert } from 'chai'
 import dotenv from 'dotenv'
-import chai from 'chai'
 
 dotenv.config()
 
-const assert = chai.assert
 const { CONNECTION_URL } = process.env
 
 const connectDatabase = () =>
