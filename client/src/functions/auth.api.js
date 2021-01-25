@@ -81,3 +81,7 @@ export const checkLocalJWT = async () => {
 	}
 	return data
 }
+
+export const submitNewPost = async (image, caption) => {
+	
+}

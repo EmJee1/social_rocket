@@ -1,20 +1,20 @@
 import { handleLoginRequest } from '../functions/auth.api'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useHistory, Link } from 'react-router-dom'
-import { setJWT } from '../functions/misc'
 import { useState, useEffect } from 'react'
+import { setJWT } from '../functions/misc'
 
-const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
+const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserName }) => {
 	const [formSuccess, setFormSuccess] = useState('')
 	const [formError, setFormError] = useState('')
-	const [userName, setUserName] = useState('')
+	const [loginUserName, setLoginUserName] = useState('')
 	const [password, setPassword] = useState('')
 
 	const history = useHistory()
 
 	useEffect(() => {
 		setFormError('')
-	}, [userName, password])
+	}, [loginUserName, password])
 
 	useEffect(() => {
 		if (isLoggedIn) {
@@ -34,12 +34,14 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 
 		if (isLoggedIn) return
 
-		if (!userName || !password) {
+		if (!loginUserName || !password) {
 			setFormError('Please fill in your username and password')
 			return
 		}
 
-		handleLoginRequest(userName, password)
+		localStorage.setItem('userName', loginUserName)
+
+		handleLoginRequest(loginUserName, password)
 			.then(res => {
 				setJWT(res.token)
 				setIsLoggedIn(true)
@@ -92,7 +94,7 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 											className='success-progress'
 											initial={{ width: '0%' }}
 											animate={{ width: '100%' }}
-											transition={{ duration: .8 }}
+											transition={{ duration: 0.8 }}
 										></motion.span>
 									</motion.div>
 								)}
@@ -106,7 +108,7 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 									className='form-control primary-input'
 									placeholder='someone@example.com'
 									id='usernameInput'
-									onChange={e => setUserName(e.target.value)}
+									onChange={e => setLoginUserName(e.target.value)}
 								/>
 							</div>
 							<div className='mb-3'>

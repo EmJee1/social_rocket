@@ -26,7 +26,7 @@ const App = () => {
 		let mounted = true
 		checkLocalJWT()
 			.then(res => {
-				if(mounted) {
+				if (mounted) {
 					setIsLoggedIn(true)
 					setJWT(res.token)
 				}
@@ -34,7 +34,7 @@ const App = () => {
 			.catch(err => {
 				setIsLoggedIn(false)
 			})
-		return () => mounted = false
+		return () => (mounted = false)
 	}, [])
 
 	return (
@@ -45,7 +45,10 @@ const App = () => {
 					<Feed />
 				</Route>
 				<Route path='/login' exact>
-					<LoginPage setIsLoggedIn={setIsLoggedIn} isLoggedIn={isLoggedIn} />
+					<LoginPage
+						setIsLoggedIn={setIsLoggedIn}
+						isLoggedIn={isLoggedIn}
+					/>
 				</Route>
 				<Route path='/signup' exact>
 					<SignupPage history={history} />

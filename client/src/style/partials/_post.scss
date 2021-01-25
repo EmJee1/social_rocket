@@ -118,3 +118,18 @@
 		}
 	}
 }
+
+// create post form
+.create-post-image {
+	display: flex;
+	justify-content: flex-start;
+	flex-direction: column;
+}
+.create-post-caption input {
+	padding: .2rem .6rem;
+	width: 100%;
+}
+.post-actions-button p {
+	margin-bottom: 0;
+	padding-left: .2rem;
+}

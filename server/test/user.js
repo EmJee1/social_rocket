@@ -40,19 +40,27 @@ describe('Test MongoDB connection', () => {
 })
 
 describe('Test authentication endpoints', () => {
-	it('Create a new user', async () => {
-        connectDatabase()
+
+	connectDatabase()
+
+	let userId
+	it('Create a new user', async done => {
 		const userDetails = {
 			userName: 'SomeTestUser',
 			password: 'someTestPassword',
 			email: 'test@test.test',
         }
-        const newUser = new User(userDetails)
+		const newUser = new User(userDetails)
+		
         try {
-            await newUser.save()
+            userId = await newUser.save()
             done()
         } catch (err) {
             done(err)
         }
+	})
+
+	it('Delete the user', async done => {
+		console.log(userId)
 	})
 })
