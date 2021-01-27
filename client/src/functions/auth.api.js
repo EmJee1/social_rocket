@@ -57,7 +57,7 @@ export const finishUserSignup = async (email, userName, password, token) => {
 export const getAllPosts = async () => {
 	const res = await fetch(`${window.API_BASEURL}posts/getPosts`)
 	const data = await res.json()
-	if(!data.success) {
+	if (!data.success) {
 		throw new Error(data.message)
 	}
 	return data
@@ -65,23 +65,41 @@ export const getAllPosts = async () => {
 
 export const checkLocalJWT = async () => {
 	const currentToken = getJWT()
-	if(!currentToken) {
+	if (!currentToken) {
 		throw new Error('User is logged out')
 	}
 	const res = await fetch(`${window.API_BASEURL}auth/verifyToken`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ token: currentToken, signNewToken: true })
+		body: JSON.stringify({ token: currentToken, signNewToken: true }),
 	})
 	const data = await res.json()
-	if(!data.success) {
+	if (!data.success) {
 		throw new Error(data.message)
 	}
 	return data
 }
 
 export const submitNewPost = async (image, caption) => {
-	
+	const userName = localStorage.getItem('userName')
+	const token = getJWT()
+
+	const formData = new FormData()
+
+	formData.append('post-image', image)
+	formData.append('userName', userName)
+	formData.append('caption', caption)
+	formData.append('token', token)
+
+	const res = await fetch(`${window.API_BASEURL}posts/createPost`, {
+		method: 'POST',
+		body: formData,
+	})
+	const data = await res.json()
+	if(!data.success) {
+		throw new Error(data.message)
+	}
+	return data
 }

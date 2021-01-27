@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import CreatePost from '../components/CreatePost'
 import Post from '../components/Post'
 
-const FeedPage = () => {
+const FeedPage = ({ isLoggedIn }) => {
 	const [showCreatePost, setShowCreatePost] = useState(false)
 	const [posts, setPosts] = useState([])
 
@@ -22,7 +22,7 @@ const FeedPage = () => {
 			.catch(err => console.error(err))
 
 		return () => (mounted = false)
-	}, [])
+	}, [showCreatePost])
 
 	return (
 		<>
@@ -30,7 +30,7 @@ const FeedPage = () => {
 				<div className='row'>
 					<div className='col-12 col-lg-6 mx-auto'>
 						<div className='feed-wrapper'>
-							{showCreatePost && <CreatePost />}
+							{showCreatePost && <CreatePost setShowCreatePost={setShowCreatePost} />}
 							{posts.length > 0 &&
 								posts.map((obj, index) => (
 									<Post
@@ -47,7 +47,12 @@ const FeedPage = () => {
 					</div>
 				</div>
 			</div>
-			<FloatingButton containerRef={containerRef} setShowCreatePost={setShowCreatePost} />
+			{isLoggedIn && (
+				<FloatingButton
+					containerRef={containerRef}
+					setShowCreatePost={setShowCreatePost}
+				/>
+			)}
 		</>
 	)
 }

@@ -2,6 +2,9 @@ import { apiBodyResponse } from '../functions/misc.js'
 import User from '../models/User.js'
 import Post from '../models/Post.js'
 import jwt from 'jsonwebtoken'
+import sharp from 'sharp'
+import path from 'path'
+import fs from 'fs'
 
 const { JSON_WEBTOKEN_SECRET } = process.env
 
@@ -18,11 +21,21 @@ export const createPost = async (req, res) => {
 		return
 	}
 
+	// resize and save image using sharp
+	await sharp(req.file.path)
+		.resize(500, 500)
+		.jpeg({ quality: 50 })
+		.toFile(path.resolve(req.file.destination, 'resized', req.file.filename))
+	fs.unlinkSync(req.file.path)
+
 	const filePath =
 		'http://' +
 		req.get('host') +
 		'/static/' +
-		req.file.path.replace('uploads\\', '').replaceAll('\\', '/')
+		req.file.path
+			.replace('uploads\\', '')
+			.replaceAll('\\', '/')
+			.replace('/posts/', '/posts/resized/')
 
 	const { token, caption, userName } = req.body
 	if (!caption || !userName || !token) {

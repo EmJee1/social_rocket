@@ -42,7 +42,7 @@ const App = () => {
 			<Nav isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
 			<Switch>
 				<Route path='/' exact>
-					<Feed />
+					<Feed isLoggedIn={isLoggedIn} />
 				</Route>
 				<Route path='/login' exact>
 					<LoginPage

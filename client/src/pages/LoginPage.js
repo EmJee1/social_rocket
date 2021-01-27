@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useHistory, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { setJWT } from '../functions/misc'
+import Alert from '../components/Alert'
 
 const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserName }) => {
 	const [formSuccess, setFormSuccess] = useState('')
@@ -65,38 +66,18 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserName }) => {
 						<motion.form onSubmit={submitHandler} layout>
 							<AnimatePresence>
 								{formError && (
-									<motion.div
-										className='alert danger-alert'
-										role='alert'
-										exit={{ x: '100vw' }}
-										transition={{ duration: 0.6 }}
-										key='error'
-									>
-										{formError}
-										<motion.span
-											className='alert-progress'
-											initial={{ width: '0%' }}
-											animate={{ width: '100%' }}
-											transition={{ duration: 3.4 }}
-										></motion.span>
-									</motion.div>
+									<Alert
+										type='danger'
+										alertText={formError}
+										transitionTime={3.4}
+									/>
 								)}
 								{formSuccess && (
-									<motion.div
-										className='alert success-alert'
-										role='alert'
-										exit={{ x: '100vw' }}
-										transition={{ duration: 0.6 }}
-										key='success'
-									>
-										{formSuccess}
-										<motion.span
-											className='success-progress'
-											initial={{ width: '0%' }}
-											animate={{ width: '100%' }}
-											transition={{ duration: 0.8 }}
-										></motion.span>
-									</motion.div>
+									<Alert
+										type='success'
+										alertText={formSuccess}
+										transitionTime={.8}
+									/>
 								)}
 							</AnimatePresence>
 							<div className='mb-3'>
