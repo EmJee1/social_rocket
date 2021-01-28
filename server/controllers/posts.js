@@ -24,18 +24,18 @@ export const createPost = async (req, res) => {
 	// resize and save image using sharp
 	await sharp(req.file.path)
 		.resize(500, 500)
-		.jpeg({ quality: 50 })
+		.jpeg({ quality: 70 })
 		.toFile(path.resolve(req.file.destination, 'resized', req.file.filename))
 	fs.unlinkSync(req.file.path)
 
-	const filePath =
+	let filePath =
 		'http://' +
 		req.get('host') +
 		'/static/' +
 		req.file.path
 			.replace('uploads\\', '')
 			.replaceAll('\\', '/')
-			.replace('/posts/', '/posts/resized/')
+	filePath = filePath.replace('/posts/', '/posts/resized/')
 
 	const { token, caption, userName } = req.body
 	if (!caption || !userName || !token) {
