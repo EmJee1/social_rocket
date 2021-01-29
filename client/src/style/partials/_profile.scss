@@ -15,3 +15,30 @@
         margin: 0 auto;
     }
 }
+
+.profile-picture-change {
+    display: flex;
+    justify-content: center;
+
+    img {
+        height: 150px;
+        width: 150px;
+        border-radius: 50%;
+        transition: all .4s;
+        cursor: pointer;
+
+        &:hover {
+            opacity: .2;
+        }
+    }
+
+    &-image-wrapper {
+        background-color: $orange;
+        border-radius: 50%;
+        z-index: 1;
+        background-image: url('../../images/folder-open-solid.svg');
+        background-size: 60px 60px;
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+}

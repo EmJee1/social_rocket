@@ -11,11 +11,14 @@ const UserSchema = new Schema({
 		default: false,
 	},
 	verificationCode: String,
+	profilePicture: {
+		type: String,
+		default: 'http://localhost:5000/static/posts/default-user.jpg',
+	},
 	createdAt: {
 		type: Date,
 		default: new Date(),
 	},
-	
 })
 
 const User = mongoose.model('User', UserSchema)

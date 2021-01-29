@@ -1,12 +1,32 @@
+import profileImage from '../images/sample-profile.jfif'
+import { useState } from 'react'
+
 const ProfilePage = () => {
+	const [updatedUserName, setUpdatedUserName] = useState(
+		localStorage.getItem('userName')
+	)
+	const [updatedProfilePicture, setUpdatedProfilePicture] = useState()
+
 	return (
 		<div className='container'>
 			<div className='row'>
 				<div className='col-12 col-md-6'>
 					<div className='profile-block'>
 						<h2 className='bold'>Personal settings</h2>
-                        <hr />
+						<hr />
 						<form>
+							<div className='mb-3 profile-picture-change'>
+								<input
+									id='select-profile-picture'
+									type='file'
+									style={{ display: 'none' }}
+								/>
+								<label htmlFor='select-profile-picture'>
+									<div className='profile-picture-change-image-wrapper'>
+										<img src={profileImage} alt='' />
+									</div>
+								</label>
+							</div>
 							<div className='mb-3'>
 								<label htmlFor='usernameInput' className='form-label'>
 									Username
@@ -15,17 +35,7 @@ const ProfilePage = () => {
 									type='text'
 									className='form-control primary-input'
 									id='usernameInput'
-								/>
-							</div>
-							<div className='mb-3'>
-								<label htmlFor='passwordInput' className='form-label'>
-									Password
-								</label>
-								<input
-									type='password'
-									className='form-control primary-input'
-									placeholder='Password'
-									id='passwordInput'
+									value={updatedUserName}
 								/>
 							</div>
 							<div className='login-buttons-wrapper'>

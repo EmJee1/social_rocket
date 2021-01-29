@@ -7,6 +7,7 @@ import cors from 'cors'
 
 import authRoutes from './routes/auth.js'
 import postRoutes from './routes/posts.js'
+import userRoutes from './routes/user.js'
 
 const app = express()
 dotenv.config()
@@ -21,6 +22,7 @@ app.use('/static', express.static(__dirname + '/uploads'))
 
 app.use('/v1/auth', authRoutes)
 app.use('/v1/posts', postRoutes)
+app.use('/v1/user', userRoutes)
 
 const CONNECTION_URL = process.env.CONNECTION_URL
 const PORT = process.env.PORT || 5000
