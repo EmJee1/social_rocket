@@ -40,6 +40,7 @@ export const updateProfilePicture = async (req, res) => {
 		res
 			.status(401)
 			.json(apiBodyResponse(false, 'Not all required fields were received'))
+		return
 	}
 
 	let decoded
@@ -93,5 +94,60 @@ export const updateProfilePicture = async (req, res) => {
 		success: true,
 		token: newToken,
 		message: 'Profile picture changed successfully',
+		profilePicture: filePath,
+	})
+}
+
+export const getUserInfoByNameAndToken = async (req, res) => {
+	if (!req.body) {
+		res.status(400).json(apiBodyResponse(false, 'No readable body received'))
+		return
+	}
+
+	const { token, userName } = req.body
+	if (!token || !userName) {
+		res
+			.status(401)
+			.json(apiBodyResponse(false, 'Not all required fields were received'))
+		return
+	}
+
+	let decoded
+	try {
+		decoded = jwt.verify(token, JSON_WEBTOKEN_SECRET)
+	} catch (err) {
+		res
+			.status(401)
+			.json(
+				apiBodyResponse(false, 'The token is not valid, please log in again')
+			)
+		return
+	}
+
+	let userQuery
+	try {
+		userQuery = await User.findOne({ _id: decoded.userId, userName })
+	} catch (err) {
+		res
+			.status(500)
+			.json(apiBodyResponse(false, 'Something went wrong, please try again'))
+		return
+	}
+
+	if (!userQuery) {
+		res
+			.status(401)
+			.json(
+				apiBodyResponse(false, 'The token is not valid, please log in again')
+			)
+		return
+	}
+
+	res.status(200).json({
+		success: true,
+		email: userQuery.email,
+		createdAt: userQuery.createdAt,
+		verifiedEmail: userQuery.verifiedEmail,
+		profilePicture: userQuery.profilePicture,
 	})
 }

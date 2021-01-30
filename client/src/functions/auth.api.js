@@ -98,7 +98,49 @@ export const submitNewPost = async (image, caption) => {
 		body: formData,
 	})
 	const data = await res.json()
-	if(!data.success) {
+	if (!data.success) {
+		throw new Error(data.message)
+	}
+	return data
+}
+
+export const updateProfilePicture = async image => {
+	const userName = localStorage.getItem('userName')
+	const token = getJWT()
+
+	const formData = new FormData()
+
+	formData.append('profile-picture', image)
+	formData.append('userName', userName)
+	formData.append('token', token)
+
+	const res = await fetch(`${window.API_BASEURL}user/updateProfilePicture`, {
+		method: 'POST',
+		body: formData,
+	})
+	const data = await res.json()
+	if (!data.success) {
+		throw new Error(data.message)
+	}
+	return data
+}
+
+export const getUserInfoByNameAndToken = async () => {
+	const userName = localStorage.getItem('userName')
+	const token = getJWT()
+
+	const res = await fetch(
+		`${window.API_BASEURL}user/getUserInfoByNameAndToken`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type':'application/json'
+			},
+			body: JSON.stringify({ userName, token }),
+		}
+	)
+	const data = await res.json()
+	if (!data.success) {
 		throw new Error(data.message)
 	}
 	return data
