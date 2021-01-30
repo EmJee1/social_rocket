@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { setJWT } from '../functions/misc'
 import Alert from '../components/Alert'
 
-const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserName }) => {
+const LoginPage = ({ isLoggedIn, setIsLoggedIn }) => {
 	const [formSuccess, setFormSuccess] = useState('')
 	const [formError, setFormError] = useState('')
 	const [loginUserName, setLoginUserName] = useState('')
@@ -40,10 +40,10 @@ const LoginPage = ({ isLoggedIn, setIsLoggedIn, setUserName }) => {
 			return
 		}
 
-		localStorage.setItem('userName', loginUserName)
-
+		
 		handleLoginRequest(loginUserName, password)
-			.then(res => {
+		.then(res => {
+				localStorage.setItem('userName', res.userName)
 				setJWT(res.token)
 				setIsLoggedIn(true)
 			})

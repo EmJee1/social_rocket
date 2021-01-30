@@ -126,7 +126,10 @@ export const getUserInfoByNameAndToken = async (req, res) => {
 
 	let userQuery
 	try {
-		userQuery = await User.findOne({ _id: decoded.userId, userName })
+		userQuery = await User.findOne({
+			_id: decoded.userId,
+			$or: [{ userName }, { email: userName }],
+		})
 	} catch (err) {
 		res
 			.status(500)

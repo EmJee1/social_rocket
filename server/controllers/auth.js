@@ -58,7 +58,12 @@ export const loginUser = async (req, res) => {
 
 	res
 		.status(200)
-		.json({ success: true, message: 'User verified successfully', token })
+		.json({
+			success: true,
+			message: 'User verified successfully',
+			token,
+			userName: userQuery.userName,
+		})
 }
 
 export const verifyToken = async (req, res) => {
@@ -132,7 +137,14 @@ export const createUserByEmail = async (req, res) => {
 		// save a new user to the database with the email and verification code
 		try {
 			await newUser.save()
-			res.status(201).json(apiBodyResponse(true, 'Please check your inbox for the verification code'))
+			res
+				.status(201)
+				.json(
+					apiBodyResponse(
+						true,
+						'Please check your inbox for the verification code'
+					)
+				)
 		} catch (err) {
 			res.status(500).json({ success: false, message: err.message })
 		}
@@ -161,7 +173,12 @@ export const createUserByEmail = async (req, res) => {
 				} else {
 					res
 						.status(201)
-						.json(apiBodyResponse(true, 'A verification e-mail has been sent, please check your inbox'))
+						.json(
+							apiBodyResponse(
+								true,
+								'A verification e-mail has been sent, please check your inbox'
+							)
+						)
 				}
 			}
 		)

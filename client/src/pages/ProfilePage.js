@@ -1,20 +1,10 @@
-import {
-	updateProfilePicture,
-	getUserInfoByNameAndToken,
-} from '../functions/auth.api'
-import { useState, useEffect } from 'react'
+import { updateProfilePicture } from '../functions/auth.api'
+import { useState } from 'react'
 
-const ProfilePage = () => {
+const ProfilePage = ({ profilePicture, setProfilePicture }) => {
 	const [updatedUserName, setUpdatedUserName] = useState(
 		localStorage.getItem('userName')
 	)
-	const [profilePicture, setProfilePicture] = useState('')
-
-	useEffect(() => {
-		getUserInfoByNameAndToken()
-			.then(res => setProfilePicture(res.profilePicture))
-			.catch(err => console.error(err))
-	}, [])
 
 	const profileImageSelected = e => {
 		updateProfilePicture(e.target.files[0])
