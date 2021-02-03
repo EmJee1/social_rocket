@@ -5,7 +5,8 @@ const Schema = mongoose.Schema
 const PostSchema = new Schema({
     caption: String,
     image: String,
-    author: String,
+	author: String,
+	authorDetails: Object,
 	likes: {
 		type: [],
 		default: [],

@@ -1,9 +1,8 @@
 import paperPlaneSVG from '../images/paper-plane-solid.svg'
-import userImage from '../images/sample-profile.jfif'
 import { submitNewPost } from '../functions/auth.api'
 import { useState, useEffect, useRef } from 'react'
 
-const CreatePost = ({ createPostRef, setShowCreatePost }) => {
+const CreatePost = ({ createPostRef, setShowCreatePost, profilePicture }) => {
 	const [caption, setCaption] = useState('')
 	const [image, setImage] = useState({})
 
@@ -28,7 +27,7 @@ const CreatePost = ({ createPostRef, setShowCreatePost }) => {
 					<div className='post-user-wrapper'>
 						<div
 							className='post-user-image'
-							style={{ backgroundImage: `url('${userImage}')` }}
+							style={{ backgroundImage: `url('${profilePicture}')` }}
 						></div>
 						<h5 className='post-user-name'>
 							{localStorage.getItem('userName')}

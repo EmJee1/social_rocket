@@ -32,9 +32,7 @@ export const createPost = async (req, res) => {
 		'http://' +
 		req.get('host') +
 		'/static/' +
-		req.file.path
-			.replace('uploads\\', '')
-			.replaceAll('\\', '/')
+		req.file.path.replace('uploads\\', '').replaceAll('\\', '/')
 	filePath = filePath.replace('/posts/', '/posts/resized/')
 
 	const { token, caption, userName } = req.body
@@ -114,15 +112,19 @@ export const getPosts = async (req, res) => {
 		let data
 		try {
 			data = await User.findOne({ _id: posts[i].author })
-				.select('userName')
+				.select('userName profilePicture')
 				.exec()
+			console.log(data)
 		} catch (err) {
 			res
 				.status(500)
 				.json(apiBodyResponse(false, 'Unexpected error, please try again'))
 			return
 		}
-		posts[i].author = data.userName
+		posts[i].authorDetails = {
+			userName: data.userName,
+			profilePicture: data.profilePicture,
+		}
 	}
 
 	res

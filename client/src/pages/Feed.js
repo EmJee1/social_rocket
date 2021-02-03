@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import CreatePost from '../components/CreatePost'
 import Post from '../components/Post'
 
-const FeedPage = ({ isLoggedIn }) => {
+const FeedPage = ({ isLoggedIn, profilePicture }) => {
 	const [showCreatePost, setShowCreatePost] = useState(false)
 	const [posts, setPosts] = useState([])
 
@@ -30,14 +30,19 @@ const FeedPage = ({ isLoggedIn }) => {
 				<div className='row'>
 					<div className='col-12 col-lg-6 mx-auto'>
 						<div className='feed-wrapper'>
-							{showCreatePost && <CreatePost setShowCreatePost={setShowCreatePost} />}
+							{showCreatePost && (
+								<CreatePost
+									setShowCreatePost={setShowCreatePost}
+									profilePicture={profilePicture}
+								/>
+							)}
 							{posts.length > 0 &&
 								posts.map((obj, index) => (
 									<Post
 										key={obj._id}
 										postImage={obj.image}
-										userImage={userImage}
-										userName={obj.author}
+										userImage={obj.authorDetails.profilePicture}
+										userName={obj.authorDetails.userName}
 										caption={obj.caption}
 										likes={obj.likes}
 										comments={obj.comments}

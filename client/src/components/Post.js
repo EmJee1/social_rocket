@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react'
 import rocketSVG from '../images/rocket-solid.svg'
 import commentsSVG from '../images/comments.svg'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 
 const Post = ({ postImage, userImage, userName, caption, likes, comments }) => {
@@ -15,7 +15,7 @@ const Post = ({ postImage, userImage, userName, caption, likes, comments }) => {
 	return (
 		<div className='post'>
 			<div className='post-user'>
-				<Link to='/user/username' className='post-user-wrapper'>
+				<Link to={`/user/${userName}`} className='post-user-wrapper'>
 					<div
 						className='post-user-image'
 						style={{ backgroundImage: `url('${userImage}')` }}
