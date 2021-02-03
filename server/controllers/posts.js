@@ -114,7 +114,6 @@ export const getPosts = async (req, res) => {
 			data = await User.findOne({ _id: posts[i].author })
 				.select('userName profilePicture')
 				.exec()
-			console.log(data)
 		} catch (err) {
 			res
 				.status(500)
@@ -130,4 +129,91 @@ export const getPosts = async (req, res) => {
 	res
 		.status(200)
 		.json({ success: true, message: 'Requested posts successfully', posts })
+}
+
+export const likePost = async (req, res) => {
+	if (!req.body) {
+		res.status(400).json(apiBodyResponse(false, 'No readable body received'))
+		return
+	}
+
+	const { token, userName, postId } = req.body
+
+	if (!postId || !userName || !token) {
+		res
+			.status(401)
+			.json(apiBodyResponse(false, 'Not all required fields were received'))
+		return
+	}
+
+	let decoded
+	try {
+		decoded = jwt.verify(token, JSON_WEBTOKEN_SECRET)
+	} catch (err) {
+		res
+			.status(401)
+			.json(
+				apiBodyResponse(false, 'The token is not valid, please log in again')
+			)
+		return
+	}
+
+	let userQuery
+	try {
+		userQuery = await User.findOne({ _id: decoded.userId, userName })
+	} catch (err) {
+		res
+			.status(500)
+			.json(apiBodyResponse(false, 'Something went wrong, please try again'))
+		return
+	}
+
+	if (!userQuery) {
+		res
+			.status(401)
+			.json(
+				apiBodyResponse(false, 'The token is not valid, please log in again')
+			)
+		return
+	}
+
+	let post
+	try {
+		post = await Post.findOne({ _id: postId }).exec()
+	} catch (err) {
+		res
+			.status(500)
+			.json(apiBodyResponse(false, 'Something went wrong, please try again'))
+		return
+	}
+
+	if (!post) {
+		res.status(400).json(apiBodyResponse(false, 'That post does not exist'))
+		return
+	}
+
+	let liked = post.likes.filter(like => like === decoded.userId)
+	liked = liked.length > 0 ? true : false
+
+	let newLikes = post.likes
+	if (liked) {
+		newLikes = newLikes.filter(like => like !== decoded.userId)
+	} else {
+		newLikes.push(decoded.userId)
+	}
+
+	console.log(newLikes)
+
+	try {
+		await Post.updateOne({ _id: postId }, { likes: newLikes }).exec()
+	} catch (err) {
+		res
+			.status(500)
+			.json(apiBodyResponse(false, 'Something went wrong, please try again'))
+		return
+	}
+
+	res
+		.status(200)
+		.json({ success: true, message: 'Succesfully liked / disliked the image' })
 }
